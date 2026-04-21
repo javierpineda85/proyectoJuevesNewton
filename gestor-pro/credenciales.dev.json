@@ -1,0 +1,40 @@
+{
+  "proyecto": "Gestor Pro",
+  "agencia": "Vex Studio",
+  "entorno": "Desarrollo Local (WAMP)",
+  "advertencia_seguridad": "ESTE ARCHIVO ES SOLO PARA DESARROLLO. NO SUBIR A PRODUCCIÓN.",
+  "credenciales_acceso": [
+    {
+      "rol": "Super Admin",
+      "descripcion": "Acceso total a todos los módulos y configuraciones.",
+      "usuario_asignado": "Nicolas Aguirres",
+      "email": "Cursoprogramacion@superadmin.com",
+      "password": "password"
+    },
+    {
+      "rol": "Administrativo",
+      "descripcion": "Gestión de usuarios y derivación de tickets/proyectos.",
+      "usuario_asignado": "Nicolas Ozan",
+      "email": "admin@vexstudio.local",
+      "password": "password"
+    },
+    {
+      "rol": "Profesional",
+      "descripcion": "Vista de tickets asignados y gestión de tareas de proyectos.",
+      "usuario_asignado": "Usuario Profesional",
+      "email": "profesional@vexstudio.local",
+      "password": "password"
+    },
+    {
+      "rol": "Cliente",
+      "descripcion": "Vista exclusiva de sus propios tickets y avance de proyectos.",
+      "usuario_asignado": "Cliente Prueba",
+      "email": "cliente@empresa.com",
+      "password": "password"
+    }
+  ],
+  "notas_tecnicas": {
+    "hash": "Todas las contraseñas en MySQL están encriptadas con BCRYPT.",
+    "login_url": "http://localhost/proyectos/gestor-pro/public/login"
+  }
+}

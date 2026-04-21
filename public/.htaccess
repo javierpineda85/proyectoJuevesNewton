@@ -1,0 +1,10 @@
+# public/.htaccess
+Options -Indexes
+RewriteEngine On
+
+# Si el usuario busca un archivo real (ej: una imagen, un CSS en assets/), déjalo pasar
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Si no es un archivo real, envía toda la URL como parámetro a index.php
+RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]

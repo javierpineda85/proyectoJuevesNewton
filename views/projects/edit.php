@@ -8,7 +8,7 @@
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8 max-w-4xl">
     
-    <form action="/proyectos/gestor-pro/public/proyectos/editar?id=<?php echo $proyecto['id']; ?>" method="POST">
+    <form action="/proyectos/gestor-pro/public/proyectos/editar?id=<?php echo $proyecto['id']; ?>" method="POST" enctype="multipart/form-data">
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             
@@ -25,10 +25,30 @@
                     <textarea id="descripcion" name="descripcion" rows="5" 
                               class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"><?php echo htmlspecialchars($proyecto['descripcion']); ?></textarea>
                 </div>
+
+                <div class="mt-4 border-t pt-4">
+                    <label class="block text-sm font-medium text-slate-700 mb-2">Archivos Adjuntos</label>
+                    
+                    <?php if(!empty($archivos)): ?>
+                        <div class="space-y-2 mb-4">
+                            <?php foreach($archivos as $archivo): ?>
+                                <div class="flex items-center justify-between p-2 bg-slate-50 border rounded-lg text-sm">
+                                    <span class="text-slate-600 truncate max-w-[200px]"><?php echo $archivo['nombre_original']; ?></span>
+                                    <a href="/proyectos/gestor-pro/public/uploads/proyectos/<?php echo $archivo['ruta_archivo']; ?>" 
+                                       target="_blank" class="text-blue-600 font-bold hover:underline">Descargar</a>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                        <p class="text-xs text-blue-700 mb-2 font-semibold">Subir archivo nuevo:</p>
+                        <input type="file" name="archivo" class="text-xs text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+                    </div>
+                </div>
             </div>
 
             <div class="space-y-6 md:border-l md:border-gray-100 md:pl-6">
-                
                 <div>
                     <label for="estado" class="block text-sm font-medium text-slate-700 mb-1">Estado del Proyecto</label>
                     <select id="estado" name="estado" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white">
@@ -50,7 +70,6 @@
                     <label for="asignado_a" class="block text-sm font-medium text-slate-700 mb-1">Asignado a Empleado</label>
                     <select id="asignado_a" name="asignado_a" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white">
                         <option value="">-- Dejar sin asignar --</option>
-                        
                         <?php foreach($usuarios as $user): ?>
                             <?php if($user['estado'] == 'activo'): ?>
                                 <option value="<?php echo $user['id']; ?>" <?php echo ($proyecto['asignado_a'] == $user['id']) ? 'selected' : ''; ?>>
@@ -58,10 +77,8 @@
                                 </option>
                             <?php endif; ?>
                         <?php endforeach; ?>
-                        
                     </select>
                 </div>
-
             </div>
         </div>
 

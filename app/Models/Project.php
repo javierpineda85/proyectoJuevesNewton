@@ -25,15 +25,31 @@ class Project {
         return $stmt->fetch();
     }
 
-    // NUEVO: Guardar un nuevo proyecto
+    // Guardar un nuevo proyecto y devolver su ID
     public static function create($data) {
         $db = Database::getInstancia();
         $sql = "INSERT INTO proyectos (titulo, descripcion, estado, fecha_limite, creador_id, asignado_a) 
                 VALUES (:titulo, :descripcion, :estado, :fecha_limite, :creador_id, :asignado_a)";
         $stmt = $db->prepare($sql);
-        return $stmt->execute($data);
+        
+        if ($stmt->execute($data)) {
+            return $db->lastInsertId(); // Devolvemos el ID generado
+        }
+        return false;
     }
 
+    // Guardar el registro del archivo adjunto
+    public static function addFile($proyecto_id, $nombre_original, $ruta_archivo) {
+        $db = Database::getInstancia();
+        $sql = "INSERT INTO proyecto_archivos (proyecto_id, nombre_original, ruta_archivo) 
+                VALUES (:proyecto_id, :nombre_original, :ruta_archivo)";
+        $stmt = $db->prepare($sql);
+        return $stmt->execute([
+            'proyecto_id' => $proyecto_id,
+            'nombre_original' => $nombre_original,
+            'ruta_archivo' => $ruta_archivo
+        ]);
+    }
     //Actualizar un proyecto existente
     public static function update($data) {
         $db = Database::getInstancia();
@@ -46,5 +62,13 @@ class Project {
                 WHERE id = :id";
         $stmt = $db->prepare($sql);
         return $stmt->execute($data);
+    }
+
+    // Obtener los archivos de un proyecto específico
+    public static function getFiles($proyecto_id) {
+        $db = Database::getInstancia();
+        $stmt = $db->prepare("SELECT * FROM proyecto_archivos WHERE proyecto_id = :proyecto_id");
+        $stmt->execute(['proyecto_id' => $proyecto_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

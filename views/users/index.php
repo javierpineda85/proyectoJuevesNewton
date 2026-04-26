@@ -38,9 +38,14 @@
                         <?php else: ?>
                             <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-semibold">Inactivo</span>
                         <?php endif; ?>
+
+                        //edité el estado del usuario para añadir no solo editar, sino también eliminar usuarios.
                     </td>
                     <td class="p-4 text-right space-x-2">
-                        <button class="text-blue-500 hover:text-blue-700 text-sm font-medium">Editar</button>
+                    <a href="/proyectos/gestor-pro/public/usuarios/edit?id=<?php echo $user['id']; ?>" class="text-blue-500 hover:text-blue-700 text-sm font-medium">Editar</a>
+                    <a href="/proyectos/gestor-pro/public/usuarios/delete?id=<?php echo $user['id']; ?>"
+                    onclick="return confirm('¿Eliminar este usuario?')"
+                    class="text-red-400 hover:text-red-600 text-sm font-medium">Eliminar</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>

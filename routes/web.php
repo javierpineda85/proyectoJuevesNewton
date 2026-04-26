@@ -12,8 +12,19 @@ $router->get('dashboard', 'DashboardController@index');
 $router->get('login', 'AuthController@showLogin');
 $router->post('login', 'AuthController@login'); 
 
-// Rutas de Usuarios
+// Edité y añadí más Rutas de Usuarios:
+//Muestra la lista
 $router->get('usuarios', 'UserController@index');
+//muestra el formulario de nuevo usuario
+$router->get('usuarios/crear', 'UserController@create');
+//guarda el usuario en la base de datos
+$router->post('usuarios/crear', 'UserController@store');
+//muestra el formulario con los datos de ese usuario para editar
+$router->get('usuarios/editar', 'UserController@edit');
+//actualiza el usuario en la base de datos
+$router->post('usuarios/editar', 'UserController@update');
+//borra el usuario de la base de datos
+$router->post('usuarios/eliminar', 'UserController@delete');
 
 // Rutas de Proyectos
 $router->get('proyectos', 'ProjectController@index');

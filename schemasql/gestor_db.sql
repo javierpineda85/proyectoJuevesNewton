@@ -132,3 +132,108 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+--Estructura de tipos de trámite por cada empresa
+CREATE TABLE tipos_tramites (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT NOT NULL, 
+    nombre VARCHAR(100) NOT NULL,
+    descripcion VARCHAR(255),
+    INDEX idx_empresa (empresa_id)
+) ENGINE=InnoDB;
+
+--  Tabla Trámites
+CREATE TABLE tramites (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    empresa_id INT NOT NULL,
+    cliente_id INT NOT NULL,
+    tipo_tramite_id INT NOT NULL,
+    responsable_id INT DEFAULT NULL, -- Relación con tu tabla de usuarios/empleados
+    
+    -- Datos del responsable 
+    responsable_nombre VARCHAR(150),
+    responsable_cargo VARCHAR(100),
+    
+    estado ENUM('pendiente', 'en proceso', 'observado', 'aprobado', 'rechazado', 'vencido', 'finalizado') DEFAULT 'pendiente',
+    prioridad ENUM('baja', 'media', 'alta', 'urgente') DEFAULT 'media',
+    
+    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+    fecha_vencimiento DATETIME,
+    observaciones_generales TEXT,
+    
+    INDEX idx_busqueda_cliente (empresa_id, cliente_id),
+    INDEX idx_busqueda_estado (empresa_id, estado),
+    INDEX idx_busqueda_vencimiento (empresa_id, fecha_vencimiento),
+    
+    CONSTRAINT fk_tipo_tramite FOREIGN KEY (tipo_tramite_id) REFERENCES tipos_tramites(id)
+) ENGINE=InnoDB;
+
+-- Historial para seguimiento
+CREATE TABLE tramites_historial (
+id INT AUTO_INCREMENT PRIMARY KEY,
+tramite_id INT NOT NULL,
+usuario_id INT NOT NULL, -- Quién hizo el cambio
+
+estado_anterior VARCHAR(50),
+estado_nuevo VARCHAR(50),
+ responsable_anterior_id INT,
+ responsable_nuevo_id INT,
+
+observacion_cambio TEXT,
+fecha_cambio DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+ CONSTRAINT fk_historial_tramite FOREIGN KEY (tramite_id) REFERENCES tramites(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Tabla Empresas
+
+CREATE TABLE empresas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+nombre_comercial VARCHAR(150) NOT NULL,
+cuit VARCHAR(20) UNIQUE NOT NULL,
+fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+--Agregar empresa_id a las tablas existentes para relacionarlas con la tabla empresas
+
+--  Tabla proyectos
+ALTER TABLE proyectos ADD COLUMN empresa_id INT NOT NULL;
+ALTER TABLE proyectos ADD INDEX idx_proyectos_empresa (empresa_id);
+ALTER TABLE proyectos ADD CONSTRAINT fk_proyectos_empresa FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE;
+
+-- Tabla proyectos_documentos
+ALTER TABLE proyectos_documentos ADD COLUMN empresa_id INT NOT NULL;
+ALTER TABLE proyectos_documentos ADD INDEX idx_docs_empresa (empresa_id);
+ALTER TABLE proyectos_documentos ADD CONSTRAINT fk_docs_empresa FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE;
+
+--  Tabla tickets
+ALTER TABLE tickets ADD COLUMN empresa_id INT NOT NULL;
+ALTER TABLE tickets ADD INDEX idx_tickets_empresa (empresa_id);
+ALTER TABLE tickets ADD CONSTRAINT fk_tickets_empresa FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE;
+
+--  Tabla tipos_tramites
+ALTER TABLE tipos_tramites ADD COLUMN empresa_id INT NOT NULL;
+ALTER TABLE tipos_tramites ADD INDEX idx_tipos_empresa (empresa_id);
+ALTER TABLE tipos_tramites ADD CONSTRAINT fk_tipos_empresa FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE;
+
+-- 5. Tabla tramites
+ALTER TABLE tramites ADD COLUMN empresa_id INT NOT NULL;
+ALTER TABLE tramites ADD INDEX idx_tramites_empresa (empresa_id);
+ALTER TABLE tramites ADD CONSTRAINT fk_tramites_empresa FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE;
+
+--  Tabla tramites_historial
+ALTER TABLE tramites_historial ADD COLUMN empresa_id INT NOT NULL;
+ALTER TABLE tramites_historial ADD INDEX idx_historial_empresa (empresa_id);
+ALTER TABLE tramites_historial ADD CONSTRAINT fk_historial_empresa FOREIGN KEY (empresa_id) REFERENCES empresas(id) ON DELETE CASCADE;
+
+--Tabla de motor InnoDB
+
+ALTER TABLE empresas ENGINE=InnoDB;
+ALTER TABLE notificaciones ENGINE=InnoDB;
+ALTER TABLE proyectos ENGINE=InnoDB;
+ALTER TABLE proyectos_documentos ENGINE=InnoDB;
+ALTER TABLE tickets ENGINE=InnoDB;
+ALTER TABLE tipos_tramites ENGINE=InnoDB;
+ALTER TABLE tramites ENGINE=InnoDB;
+ALTER TABLE tramites_historial ENGINE=InnoDB;
+ALTER TABLE usuarios ENGINE=InnoDB;

@@ -1,6 +1,6 @@
 <div class="flex justify-between items-center mb-6">
     <h2 class="text-2xl font-bold text-gray-800">Gestión de Usuarios</h2>
-    <a href="/proyectos/gestor-pro/public/usuarios/crear" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm">
+    <a href="/proyectos/gestor-pro/public/users/crear" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm">
         + Nuevo Usuario
     </a>
 </div>

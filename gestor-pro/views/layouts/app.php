@@ -18,7 +18,7 @@
             <a href="/gestor-pro/public/dashboard" class="block px-4 py-3 bg-blue-600 rounded-lg transition">
                 📊 Dashboard
             </a>
-            <a href="/proyectos/gestor-pro/public/usuarios" class="block px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition">
+            <a href="/proyectos/gestor-pro/public/users" class="block px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition">
                 👥 Usuarios
             </a>
             <a href="#" class="block px-4 py-3 text-slate-300 hover:bg-slate-800 rounded-lg transition">

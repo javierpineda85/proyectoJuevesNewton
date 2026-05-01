@@ -3,140 +3,60 @@
 namespace app\Controllers;
 
 use app\Core\Controller;
+use app\Core\Session;
 use app\Models\Project;
-use app\Models\User; 
 
 class ProjectController extends Controller {
-    
-    // 1. Mostrar todos los proyectos
+
     public function index() {
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: /proyectos/gestor-pro/public/login");
-            exit;
-        }
-        $proyectos = Project::getAll();
-        $this->render('projects/index', ['proyectos' => $proyectos]);
-    }
+        // Obtenemos el empresa_id. Puede ser null para Administrador Global.
+        $empresaId = Session::get('empresa_id');
+        
+        // El modelo ahora acepta null y devuelve todos los registros.
+        $proyectos = Project::getAllByEmpresa($empresaId);
 
-    // 2. Mostrar formulario de nuevo proyecto
-    public function create() {
-        $usuarios = User::getAll(); 
-        $this->render('projects/create', ['usuarios' => $usuarios]);
-    }
-
-    // 3. Guardar un nuevo proyecto (con archivos)
-    public function store() {
-        $titulo = trim($_POST['titulo']);
-        $fecha_limite = $_POST['fecha_limite'];
-        $hoy = date('Y-m-d');
-
-        if (empty($titulo)) {
-            die("Error: El título es obligatorio.");
-        }
-        if ($fecha_limite < $hoy) {
-            die("Error Crítico: No puedes asignar una fecha límite en el pasado.");
-        }
-
-        $data = [
-            'titulo' => $titulo,
-            'descripcion' => trim($_POST['descripcion']),
-            'estado' => $_POST['estado'],
-            'fecha_limite' => $fecha_limite,
-            'creador_id' => $_SESSION['user_id'], 
-            'asignado_a' => !empty($_POST['asignado_a']) ? $_POST['asignado_a'] : null
-        ];
-
-        $proyecto_id = Project::create($data);
-
-        if ($proyecto_id) {
-            if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK) {
-                $fileTmpPath = $_FILES['archivo']['tmp_name'];
-                $fileName = $_FILES['archivo']['name'];
-                $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                $allowedfileExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'zip'];
-                
-                if (in_array($fileExtension, $allowedfileExtensions)) {
-                    $newFileName = uniqid() . '_' . preg_replace('/[^a-zA-Z0-9.\-_]/', '', $fileName);
-                    $uploadFileDir = BASE_PATH . '/public/uploads/proyectos/';
-                    $dest_path = $uploadFileDir . $newFileName;
-                    
-                    if(move_uploaded_file($fileTmpPath, $dest_path)) {
-                        Project::addFile($proyecto_id, $fileName, $newFileName);
-                    }
-                }
-            }
-            header("Location: /proyectos/gestor-pro/public/proyectos");
-            exit;
-        } else {
-            die("Error en la base de datos al crear el proyecto.");
-        }
-    }
-
-    // 4. Mostrar formulario de edición pre-rellenado
-    public function edit() {
-        $id = $_GET['id'] ?? 0;
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: /proyectos/gestor-pro/public/login");
-            exit;
-        }
-
-        $proyecto = Project::find($id);
-        if (!$proyecto) {
-            header("Location: /proyectos/gestor-pro/public/proyectos");
-            exit;
-        }
-
-        // Buscamos los archivos asociados a este proyecto
-        $archivos = Project::getFiles($id);
-        $usuarios = User::getAll(); 
-
-        $this->render('projects/edit', [
-            'proyecto' => $proyecto, 
-            'usuarios' => $usuarios,
-            'archivos' => $archivos
+        $this->render('projects/index', [
+            'proyectos' => $proyectos
         ]);
     }
 
-    // 5. Guardar cambios de edición (y nuevos archivos)
-    public function update() { 
-        $id = $_GET['id'] ?? 0;
-        $titulo = trim($_POST['titulo']);
-        $fecha_limite = $_POST['fecha_limite'];
+    public function create() {
+        $this->render('projects/create');
+    }
 
-        if (empty($titulo)) {
-            die("Error: El título es obligatorio.");
-        }
+    public function store() {
+        $this->validateCsrf();
 
+        $empresaId = Session::get('empresa_id');
+        
+        // Si es Admin Global y no especificó empresa_id, tomamos 1 por defecto (o manejarlo)
+        // Pero el Administrador Global usualmente gestiona todo el SaaS.
         $data = [
-            'id' => $id, 
-            'titulo' => $titulo,
-            'descripcion' => trim($_POST['descripcion']),
-            'estado' => $_POST['estado'],
-            'fecha_limite' => $fecha_limite,
-            'asignado_a' => !empty($_POST['asignado_a']) ? $_POST['asignado_a'] : null
+            'empresa_id'   => $empresaId ? (int)$empresaId : 1, // Fallback a empresa ID 1 para admin global si crea
+            'cliente_id'   => (int)($_POST['cliente_id'] ?? 0),
+            'nombre'       => htmlspecialchars(trim($_POST['nombre'] ?? '')),
+            'descripcion'  => htmlspecialchars(trim($_POST['descripcion'] ?? '')),
+            'estado'       => $_POST['estado'] ?? 'pendiente',
+            'prioridad'    => $_POST['prioridad'] ?? 'media',
+            'fecha_inicio' => $_POST['fecha_inicio'] ?? null,
+            'fecha_fin'    => $_POST['fecha_fin'] ?? null
         ];
 
-        if (Project::update($data)) {
-            if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK) {
-                $fileTmpPath = $_FILES['archivo']['tmp_name'];
-                $fileName = $_FILES['archivo']['name'];
-                $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-                $allowedfileExtensions = ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'zip'];
-                
-                if (in_array($fileExtension, $allowedfileExtensions)) {
-                    $newFileName = uniqid() . '_' . preg_replace('/[^a-zA-Z0-9.\-_]/', '', $fileName);
-                    $uploadFileDir = BASE_PATH . '/public/uploads/proyectos/';
-                    $dest_path = $uploadFileDir . $newFileName;
-                    
-                    if(move_uploaded_file($fileTmpPath, $dest_path)) {
-                        Project::addFile($id, $fileName, $newFileName);
-                    }
-                }
-            }
-            header("Location: /proyectos/gestor-pro/public/proyectos");
+        if (empty($data['nombre']) || empty($data['cliente_id'])) {
+            Session::set('flash_error', 'El nombre y el cliente son campos obligatorios.');
+            redirect('proyectos/crear');
             exit;
-        } else {
-            die("Error al actualizar el proyecto.");
         }
+
+        $projectId = Project::create($data);
+
+        if ($projectId) {
+            Session::set('flash_success', 'Proyecto creado exitosamente.');
+            redirect('proyectos');
+        } else {
+            Session::set('flash_error', 'Ocurrió un error al crear el proyecto.');
+            redirect('proyectos/crear');
+        }
+        exit;
     }
 }

@@ -1,42 +1,43 @@
-<div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
-    
-    <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold tracking-wider text-slate-800">GESTOR<span class="text-blue-600">PRO</span></h1>
-        <p class="text-sm text-slate-500 mt-2">Ingresa tus credenciales para acceder</p>
+<?php
+// views/auth/login.php
+?>
+<div class="text-center mb-5">
+    <div class="bg-primary bg-opacity-10 d-inline-block rounded-4 p-3 mb-3">
+        <i class="bi bi-shield-lock-fill text-primary fs-1"></i>
+    </div>
+    <h3 class="fw-bold text-dark mb-1">GESTOR PRO</h3>
+    <p class="text-secondary small">Log in to your account to continue</p>
+</div>
+
+<?php if (isset($error) && !empty($error)): ?>
+    <div class="alert alert-danger border-0 small text-center mb-4 rounded-3 py-2">
+        <i class="bi bi-exclamation-circle me-2"></i> <?= $error ?>
+    </div>
+<?php endif; ?>
+
+<form action="<?= url('login') ?>" method="POST">
+    <?= \app\Core\Controller::csrf_field() ?>
+
+    <div class="mb-3">
+        <label class="form-label small fw-bold text-secondary text-uppercase tracking-wider">Email Address</label>
+        <input type="email" name="email" class="form-control" placeholder="admin@gestorpro.com" required autofocus>
     </div>
 
-    <?php if(isset($error)): ?>
-        <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-md text-sm">
-            <p class="font-medium">Error de acceso</p>
-            <p><?php echo $error; ?></p>
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="form-label small fw-bold text-secondary text-uppercase tracking-wider m-0">Password</label>
+            <a href="#" class="small text-primary text-decoration-none fw-medium">Forgot?</a>
         </div>
-    <?php endif; ?>
-
-    <form action="/proyectos/gestor-pro/public/login" method="POST" class="space-y-6">
-        
-        <div>
-            <label for="email" class="block text-sm font-medium text-slate-700 mb-1">Correo Electrónico</label>
-            <input type="email" id="email" name="email" required 
-                   class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                   placeholder="admin@vexstudio.com">
-        </div>
-
-        <div>
-            <label for="password" class="block text-sm font-medium text-slate-700 mb-1">Contraseña</label>
-            <input type="password" id="password" name="password" required 
-                   class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
-                   placeholder="••••••••">
-        </div>
-
-        <button type="submit" 
-                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 shadow-md hover:shadow-lg">
-            Iniciar Sesión
-        </button>
-
-    </form>
-
-    <div class="mt-6 text-center">
-        <a href="#" class="text-sm text-blue-600 hover:underline">¿Olvidaste tu contraseña?</a>
+        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
     </div>
 
+    <button type="submit" class="btn btn-primary w-100 mb-4">
+        Sign In
+    </button>
+</form>
+
+<div class="text-center">
+    <p class="text-muted small m-0">
+        Don't have an account? <a href="#" class="text-primary text-decoration-none fw-bold">Contact Admin</a>
+    </p>
 </div>

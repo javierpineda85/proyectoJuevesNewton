@@ -1,67 +1,69 @@
-<div class="flex justify-between items-center mb-8">
+<?php
+// views/projects/index.php
+use app\Core\Session;
+$rol = Session::get('rol_nombre');
+?>
+<div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <h2 class="text-2xl font-bold text-gray-800">Panel de Proyectos</h2>
-        <p class="text-sm text-slate-500 mt-1">Gestiona y asigna las tareas de tu equipo.</p>
+        <h2 class="fw-bold m-0">Proyectos</h2>
+        <p class="text-muted small mb-0">Gestión de tareas y flujo de trabajo</p>
     </div>
-    <a href="/proyectos/gestor-pro/public/proyectos/crear" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition shadow-sm flex items-center gap-2">
-        <span>+ Nuevo Proyecto</span>
-    </a>
+    <?php if ($rol !== 'cliente'): ?>
+        <a href="<?= url('proyectos/crear') ?>" class="btn text-white fw-bold px-4 py-2 border-0 shadow-sm" 
+           style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px;">
+            <i class="bi bi-plus-lg me-2"></i> NUEVO PROYECTO
+        </a>
+    <?php endif; ?>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-    
-    <?php foreach($proyectos as $p): ?>
-    
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col hover:shadow-md transition">
-        
-        <div class="flex justify-between items-start mb-4">
-            <?php 
-                // Colores dinámicos según el estado
-                $estadoClass = 'bg-gray-100 text-gray-700';
-                $estadoTexto = 'Pendiente';
-                if($p['estado'] == 'en_progreso') { $estadoClass = 'bg-blue-100 text-blue-700'; $estadoTexto = 'En Progreso'; }
-                if($p['estado'] == 'pausado') { $estadoClass = 'bg-orange-100 text-orange-700'; $estadoTexto = 'Pausado'; }
-                if($p['estado'] == 'completado') { $estadoClass = 'bg-green-100 text-green-700'; $estadoTexto = 'Completado'; }
-            ?>
-            <span class="px-3 py-1 rounded-full text-xs font-semibold <?php echo $estadoClass; ?>">
-                <?php echo $estadoTexto; ?>
-            </span>
-            <span class="text-xs text-slate-400 font-medium bg-slate-50 px-2 py-1 rounded">
-                Vence: <?php echo date('d M, Y', strtotime($p['fecha_limite'])); ?>
-            </span>
-        </div>
-
-        <h3 class="text-lg font-bold text-gray-800 mb-2 leading-tight">
-            <?php echo htmlspecialchars($p['titulo']); ?>
-        </h3>
-        <p class="text-sm text-gray-500 mb-6 flex-1 line-clamp-3">
-            <?php echo htmlspecialchars($p['descripcion']); ?>
-        </p>
-
-        <div class="pt-4 border-t border-gray-100 flex items-center justify-between mt-auto">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">
-                    <?php echo substr($p['empleado_asignado'] ?? 'S', 0, 1); ?>
-                </div>
-                <div>
-                    <p class="text-xs text-slate-400">Asignado a</p>
-                    <p class="text-sm font-medium text-gray-800">
-                        <?php echo $p['empleado_asignado'] ?? '<span class="text-red-500 italic">Sin asignar</span>'; ?>
-                    </p>
-                </div>
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-body p-0">
+        <?php if (empty($proyectos)): ?>
+            <div class="p-5 text-center text-muted">No hay proyectos activos actualmente.</div>
+        <?php else: ?>
+            <div class="table-responsive">
+                <table class="table align-middle m-0" style="font-size: 0.9rem;">
+                    <thead class="bg-light text-secondary text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">
+                        <tr>
+                            <th class="py-4 ps-4 border-0">NOMBRE</th>
+                            <th class="py-4 border-0">CLIENTE</th>
+                            <th class="py-4 border-0">ESTADO</th>
+                            <th class="py-4 border-0">PRIORIDAD</th>
+                            <th class="py-4 pe-4 text-end border-0">GESTIÓN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($proyectos as $p): ?>
+                        <tr class="border-top" style="border-color: rgba(0,0,0,0.03) !important;">
+                            <td class="py-4 ps-4 fw-bold text-dark"><?= htmlspecialchars($p['nombre']) ?></td>
+                            <td class="py-4 text-muted"><?= htmlspecialchars($p['cliente_nombre']) ?></td>
+                            <td class="py-4">
+                                <?php 
+                                    $styles = match($p['estado']) {
+                                        'finalizado' => 'background: #e6fffa; color: #234e52;',
+                                        'en_progreso' => 'background: #ebf8ff; color: #2c5282;',
+                                        'pendiente' => 'background: #fffaf0; color: #744210;',
+                                        default => 'background: #edf2f7; color: #2d3748;'
+                                    };
+                                ?>
+                                <span class="badge px-3 py-2 rounded-pill text-uppercase" style="<?= $styles ?>; font-size: 0.7rem;">
+                                    <?= str_replace('_', ' ', $p['estado']) ?>
+                                </span>
+                            </td>
+                            <td class="py-4 text-muted">
+                                <span class="opacity-75"><?= ucfirst($p['prioridad']) ?></span>
+                            </td>
+                            <td class="py-4 pe-4 text-end">
+                                <div class="btn-group shadow-sm rounded-3 overflow-hidden">
+                                    <button class="btn btn-white border-0 py-2"><i class="bi bi-eye text-primary"></i></button>
+                                    <button class="btn btn-white border-0 py-2"><i class="bi bi-pencil text-secondary"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
-            
-           <a href="/proyectos/gestor-pro/public/proyectos/editar?id=<?php echo $p['id']; ?>" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Editar &rarr;</a>
-        </div>
+        <?php endif; ?>
     </div>
-    
-    <?php endforeach; ?>
-
 </div>
-
-<?php if(empty($proyectos)): ?>
-<div class="text-center py-16 bg-white rounded-xl border border-dashed border-gray-300">
-    <p class="text-gray-500 mb-2">No hay proyectos activos en este momento.</p>
-    <p class="text-sm text-gray-400">Crea uno nuevo para empezar a asignar tareas.</p>
-</div>
-<?php endif; ?>

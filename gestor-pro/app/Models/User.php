@@ -32,4 +32,41 @@ class User {
         $stmt = $db->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // busca el usuario, prepara la consulta, ejecuta y devuelve el resultado de los usuarios:
+    public static function find($id) {
+    $db = Database::getInstancia();
+    $stmt = $db->prepare("SELECT * FROM usuarios WHERE id = :id");
+    $stmt->execute(['id' => $id]);
+    return $stmt->fetch();
+}
+
+public static function create($data) {
+    $db = Database::getInstancia();
+    $sql = "INSERT INTO usuarios (nombre, email, password, rol_id, estado) 
+            VALUES (:nombre, :email, :password, :rol_id, :estado)";
+    $stmt = $db->prepare($sql);
+    return $stmt->execute($data);
+}
+
+public static function update($data) {
+    $db = Database::getInstancia();
+    $sql = "UPDATE usuarios 
+            SET nombre = :nombre, email = :email, rol_id = :rol_id, estado = :estado 
+            WHERE id = :id";
+    $stmt = $db->prepare($sql);
+    return $stmt->execute($data);
+}
+
+public static function delete($id) {
+    $db = Database::getInstancia();
+    $stmt = $db->prepare("DELETE FROM usuarios WHERE id = :id");
+    return $stmt->execute(['id' => $id]);
+}
+
+public static function getRoles() {
+    $db = Database::getInstancia();
+    $stmt = $db->query("SELECT * FROM roles");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 }

@@ -2,7 +2,7 @@
     <h2 class="text-2xl font-bold text-gray-800 mb-6">Editar Usuario</h2>
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <form action="/proyectos/gestor-pro/public/usuarios/editar?id=<?php echo $usuario['id']; ?>" method="POST">
+        <form action="/proyectos/gestor-pro/public/users/editar?id=<?php echo $usuario['id']; ?>" method="POST">
 
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Nombres</label>
@@ -34,7 +34,7 @@
             </div>
 
             <div class="flex justify-end gap-3">
-                <a href="/proyectos/gestor-pro/public/usuarios" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">Cancelar</a>
+                <a href="/proyectos/gestor-pro/public/users" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">Cancelar</a>
                 <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
                     Guardar cambios
                 </button>

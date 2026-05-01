@@ -2,7 +2,7 @@
 Proyecto integrador del curso de programación web de la escuela Newton. En este proyecto deben incorporar HTML, CSS, JavaScript, POO, Base de datos y PHP
 # 🏢 Gestor Pro
 
-Gestor Pro es un sistema integral de gestión (CRM + Tickets + Trámites + Proyectos) desarrollado por **Vex Studio**. Está diseñado con una arquitectura modular y escalable (White-label) que permite ser comercializado e implementado en múltiples clientes de manera independiente.
+Gestor Pro es un sistema integral de gestión (CRM + Tickets + Trámites + Proyectos) desarrollado por. Está diseñado con una arquitectura modular y escalable (White-label) que permite ser comercializado e implementado en múltiples clientes de manera independiente.
 
 ## 🛠️ Stack Tecnológico
 

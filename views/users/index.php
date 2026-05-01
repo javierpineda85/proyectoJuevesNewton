@@ -19,7 +19,7 @@
             </thead>
             <tbody class="divide-y divide-gray-100">
                 
-                <?php foreach($usuarios as $user): ?>
+                <?php foreach($usuarios as $user):
                 <tr class="hover:bg-gray-50 transition">
                     <td class="p-4 text-gray-800 font-medium">
                         <?php echo htmlspecialchars($user['nombre']); ?>

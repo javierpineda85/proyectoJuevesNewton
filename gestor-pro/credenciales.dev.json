@@ -15,14 +15,14 @@
       "rol": "Administrativo",
       "descripcion": "Gestión de usuarios y derivación de tickets/proyectos.",
       "usuario_asignado": "Nicolas Ozan",
-      "email": "admin@vexstudio.local",
+      "email": "admin@vexstudio.com",
       "password": "password"
     },
     {
       "rol": "Profesional",
       "descripcion": "Vista de tickets asignados y gestión de tareas de proyectos.",
       "usuario_asignado": "Usuario Profesional",
-      "email": "profesional@vexstudio.local",
+      "email": "profesional@vexstudio.com",
       "password": "password"
     },
     {

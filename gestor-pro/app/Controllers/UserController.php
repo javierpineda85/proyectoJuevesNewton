@@ -1,5 +1,4 @@
 <?php
-// app/Controllers/UserController.php
 namespace app\Controllers;
 
 use app\Core\Controller;
@@ -7,83 +6,75 @@ use app\Models\User;
 
 class UserController extends Controller {
     
+    // Lista todos los usuarios
     public function index() {
-        // 1. Protección: Solo usuarios logueados entran aquí
         if (!isset($_SESSION['user_id'])) {
             header("Location: /proyectos/gestor-pro/public/login");
             exit;
         }
-
-        // (Opcional) Más adelante aquí verificaremos si el usuario tiene rol de "Admin" para poder ver esta pantalla.
-
-        // 2. Pedimos todos los usuarios al modelo
         $usuarios = User::getAll();
-
-        // 3. Renderizamos la vista pasándole los datos
         $this->render('users/index', ['usuarios' => $usuarios]);
     }
 
-    // Mostrar formulario de nuevo usuario
+    // Muestra formulario de nuevo usuario
     public function create() {
-        $roles = User::getRoles();
-        $this->render('users/create', ['roles' => $roles]);
+        $this->render('users/create', []);
     }
 
-    // Guardar nuevo usuario en la base de datos
+    // Guarda usuario nuevo
     public function store() {
         $data = [
             'nombre'   => trim($_POST['nombre']),
             'email'    => trim($_POST['email']),
             'password' => password_hash($_POST['password'], PASSWORD_DEFAULT),
-            'rol_id'   => $_POST['rol_id'],
-            'estado'   => $_POST['estado']
+            'rol'      => $_POST['rol'],
+            'telefono' => trim($_POST['telefono'] ?? '')
         ];
 
         if (User::create($data)) {
-            header("Location: /proyectos/gestor-pro/public/users");
+            header("Location: /proyectos/gestor-pro/public/usuarios");
             exit;
         } else {
             die("Error al crear el usuario.");
         }
     }
 
-    // Mostrar formulario de edición con datos del usuario
+    // Muestra formulario de edición
     public function edit() {
         $id = $_GET['id'] ?? 0;
         $usuario = User::find($id);
-        $roles = User::getRoles();
 
         if (!$usuario) {
-            header("Location: /proyectos/gestor-pro/public/users");
+            header("Location: /proyectos/gestor-pro/public/usuarios");
             exit;
         }
 
-        $this->render('users/edit', ['usuario' => $usuario, 'roles' => $roles]);
+        $this->render('users/edit', ['usuario' => $usuario]);
     }
 
-    // Guardar cambios del usuario editado
+    // Guarda cambios
     public function update() {
         $data = [
-            'id'     => $_GET['id'] ?? 0,
-            'nombre' => trim($_POST['nombre']),
-            'email'  => trim($_POST['email']),
-            'rol_id' => $_POST['rol_id'],
-            'estado' => $_POST['estado']
+            'id'       => $_GET['id'] ?? 0,
+            'nombre'   => trim($_POST['nombre']),
+            'email'    => trim($_POST['email']),
+            'rol'      => $_POST['rol'],
+            'telefono' => trim($_POST['telefono'] ?? '')
         ];
 
         if (User::update($data)) {
-            header("Location: /proyectos/gestor-pro/public/users");
+            header("Location: /proyectos/gestor-pro/public/usuarios");
             exit;
         } else {
             die("Error al actualizar el usuario.");
         }
     }
 
-    // Eliminar usuario
+    // Elimina usuario
     public function delete() {
         $id = $_GET['id'] ?? 0;
         User::delete($id);
-        header("Location: /proyectos/gestor-pro/public/users");
+        header("Location: /proyectos/gestor-pro/public/usuarios");
         exit;
     }
 }

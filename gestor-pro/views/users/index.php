@@ -1,3 +1,10 @@
+<?php
+require_once __DIR__ . '/../../app/Models/User.php';
+require_once __DIR__ . '/../../app/Core/Database.php';
+require_once __DIR__ . '/../../app/Config/config.php';
+use app\Models\User;
+$usuarios = User::getAll();
+?>
 <div class="flex justify-between items-center mb-6">
     <h2 class="text-2xl font-bold text-gray-800">Gestión de Usuarios</h2>
     <a href="/proyectos/gestor-pro/public/users/create" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm">

@@ -14,17 +14,17 @@ $router->post('login', 'AuthController@login');
 
 // Edité y añadí más Rutas de Usuarios:
 //Muestra la lista
-$router->get('usuarios', 'UserController@index');
+$router->get('users', 'UserController@index');
 //muestra el formulario de nuevo usuario
-$router->get('usuarios/crear', 'UserController@create');
+$router->get('users/create', 'UserController@create');
 //guarda el usuario en la base de datos
-$router->post('usuarios/crear', 'UserController@store');
+$router->post('users/create', 'UserController@store');
 //muestra el formulario con los datos de ese usuario para editar
-$router->get('usuarios/editar', 'UserController@edit');
+$router->get('users/edit', 'UserController@edit');
 //actualiza el usuario en la base de datos
-$router->post('usuarios/editar', 'UserController@update');
+$router->post('users/edit', 'UserController@update');
 //borra el usuario de la base de datos
-$router->post('usuarios/eliminar', 'UserController@delete');
+$router->post('users/delete', 'UserController@delete');
 
 // Rutas de Proyectos
 $router->get('proyectos', 'ProjectController@index');
@@ -33,7 +33,7 @@ $router->get('proyectos/crear', 'ProjectController@create');
 $router->post('proyectos/crear', 'ProjectController@store');
 //Rutas de Edicion de Proyectos
 $router->get('proyectos/editar', 'ProjectController@edit');
-$router->post('proyectos/editar', 'ProjectController@update');
+$router->post('proyectos/update', 'ProjectController@update');
 
 // --- 2. LUEGO CAPTURAMOS LA URL ---
 $uri = isset($_GET['route']) ? $_GET['route'] : '/';

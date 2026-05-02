@@ -32,7 +32,7 @@ class UserController extends Controller {
         ];
 
         if (User::create($data)) {
-            header("Location: /proyectos/gestor-pro/public/usuarios");
+            header("Location: /proyectos/gestor-pro/public/users");
             exit;
         } else {
             die("Error al crear el usuario.");
@@ -45,7 +45,7 @@ class UserController extends Controller {
         $usuario = User::find($id);
 
         if (!$usuario) {
-            header("Location: /proyectos/gestor-pro/public/usuarios");
+            header("Location: /proyectos/gestor-pro/public/users");
             exit;
         }
 
@@ -63,7 +63,7 @@ class UserController extends Controller {
         ];
 
         if (User::update($data)) {
-            header("Location: /proyectos/gestor-pro/public/usuarios");
+            header("Location: /proyectos/gestor-pro/public/users");
             exit;
         } else {
             die("Error al actualizar el usuario.");
@@ -74,7 +74,7 @@ class UserController extends Controller {
     public function delete() {
         $id = $_GET['id'] ?? 0;
         User::delete($id);
-        header("Location: /proyectos/gestor-pro/public/usuarios");
+        header("Location: /proyectos/gestor-pro/public/users");
         exit;
     }
 }

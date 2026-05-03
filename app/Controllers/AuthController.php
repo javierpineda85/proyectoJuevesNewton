@@ -3,62 +3,40 @@
 namespace app\Controllers;
 
 use app\Core\Controller;
-use app\Core\Session;
-
-// Carga manual preventiva del modelo
-require_once __DIR__ . '/../Models/User.php';
 use app\Models\User;
-
 
 class AuthController extends Controller {
     
     public function showLogin() {
-        if (Session::isLoggedIn()) {
-            redirect('dashboard');
-            exit;
-        }
         $this->render('auth/login', [], 'auth');
     }
 
     public function login() {
-        $this->validateCsrf();
-
-        $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+        $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
 
-        if (!$email || !$password) {
-            $this->render('auth/login', ['error' => 'Por favor complete todos los campos.'], 'auth');
-            return;
-        }
-
-        // Llamada estricta al modelo User
         $user = User::findByEmail($email);
 
+        // Si el usuario existe y la contraseña es correcta
         if ($user && password_verify($password, $user['password'])) {
-            if ($user['estado'] !== 'activo') {
-                $this->render('auth/login', ['error' => 'Su cuenta está inactiva.'], 'auth');
-                return;
-            }
-
-            session_regenerate_id(true);
-
-            Session::set('user_id', $user['id']);
-            Session::set('user_name', $user['nombre']);
-            Session::set('rol_id', $user['rol_id']);
-            Session::set('rol_nombre', $user['rol_nombre']);
-            Session::set('empresa_id', $user['empresa_id']);
             
-            redirect('dashboard');
+            // Creamos la sesión
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['user_name'] = $user['nombre'];
+            $_SESSION['user_role'] = $user['rol_id'];
+            
+            // Redirigimos al panel
+            header("Location: /proyectos/gestor-pro/public/dashboard");
             exit;
             
         } else {
-            $this->render('auth/login', ['error' => 'Credenciales incorrectas.'], 'auth');
+            $this->render('auth/login', ['error' => 'Correo o contraseña incorrectos.'], 'auth');
         }
     }
     
     public function logout() {
-        Session::destroy();
-        redirect('login');
+        session_destroy();
+        header("Location: /proyectos/gestor-pro/public/login");
         exit;
     }
 }

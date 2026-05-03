@@ -23,10 +23,10 @@ class AuthController extends Controller {
             // Creamos la sesión
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_name'] = $user['nombre'];
-            $_SESSION['user_role'] = $user['rol'];
+            $_SESSION['user_role'] = $user['rol_id'];
             
             // Redirigimos al panel
-            header("Location: /proyectos/public/dashboard");
+            header("Location: /proyectos/gestor-pro/public/dashboard");
             exit;
             
         } else {
@@ -36,7 +36,7 @@ class AuthController extends Controller {
     
     public function logout() {
         session_destroy();
-        header("Location: /proyectos/public/login");
+        header("Location: /proyectos/gestor-pro/public/login");
         exit;
     }
 }

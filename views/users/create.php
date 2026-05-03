@@ -1,51 +1,45 @@
-<div class="max-w-3xl mx-auto">
-    <div class="mb-10">
-        <a href="<?= url('usuarios') ?>" class="text-indigo-600 font-bold text-sm hover:underline flex items-center gap-2 mb-4">
-            ← Back to Users
-        </a>
-        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Create New User</h2>
-        <p class="text-slate-500 mt-1">Register a new team member or client in the system.</p>
+<div class="max-w-lg mx-auto">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Nuevo Usuario</h2>
+
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <form action="/proyectos/gestor-pro/public/users/create" method="POST">
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                <input type="text" name="nombre" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" name="email" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+                <input type="password" name="password" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                <input type="text" name="telefono" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+                <select name="rol" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="superadmin">Super Admin</option>
+                    <option value="administrativo">Administrativo</option>
+                    <option value="profesional">Profesional</option>
+                    <option value="cliente">Cliente</option>
+                    <option value="prospecto">Prospecto</option>
+                </select>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <a href="/proyectos/gestor-pro/public/users" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800">Cancelar</a>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition">Guardar</button>
+            </div>
+
+        </form>
     </div>
-
-    <form action="/usuarios/crear" method="POST" class="bg-white rounded-3xl shadow-xl border border-slate-200 p-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div class="flex flex-col gap-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400">Full Name</label>
-                <input type="text" name="nombre" required placeholder="John Doe" class="bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-700 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all">
-            </div>
-            <div class="flex flex-col gap-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400">Email Address</label>
-                <input type="email" name="email" required placeholder="john@example.com" class="bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-700 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all">
-            </div>
-            <div class="flex flex-col gap-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400">Password</label>
-                <input type="password" name="password" required placeholder="••••••••" class="bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-700 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all">
-            </div>
-            <div class="flex flex-col gap-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400">Phone Number</label>
-                <input type="text" name="telefono" placeholder="+1 (555) 000-0000" class="bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-700 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all">
-            </div>
-            <div class="flex flex-col gap-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400">System Role</label>
-                <select name="rol_id" required class="bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-700 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all appearance-none cursor-pointer">
-                    <?php foreach($roles as $role): ?>
-                        <option value="<?= $role['id'] ?>"><?= ucfirst($role['nombre']) ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="flex flex-col gap-2">
-                <label class="text-xs font-black uppercase tracking-widest text-slate-400">Account Status</label>
-                <select name="estado" required class="bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 text-slate-700 font-medium focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all appearance-none cursor-pointer">
-                    <option value="activo">Active</option>
-                    <option value="inactivo">Inactive</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="flex justify-end pt-4">
-            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-10 py-4 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-indigo-200 active:scale-95">
-                Save User Account
-            </button>
-        </div>
-    </form>
 </div>

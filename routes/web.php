@@ -1,33 +1,43 @@
 <?php
-use app\Controllers\AuthController;
-use app\Controllers\DashboardController;
-use app\Controllers\ProjectController;
-use app\Controllers\UserController;
+// routes/web.php
+use app\Core\Router;
 
-// --- RUTAS PÚBLICAS ---
-$router->get('login', [AuthController::class, 'showLogin']);
-$router->post('login', [AuthController::class, 'login']);
-$router->get('logout', [AuthController::class, 'logout']);
-$router->get('/', [AuthController::class, 'showLogin']); 
-$router->get('', [AuthController::class, 'showLogin']); 
-$router->get('lang', [DashboardController::class, 'setLanguage']); 
+$router = new Router();
 
-// --- RUTAS PROTEGIDAS ---
-$router->get('dashboard', [DashboardController::class, 'index']);
-$router->get('proyectos', [ProjectController::class, 'index']);
-$router->get('proyectos/crear', [ProjectController::class, 'create']);
-$router->post('proyectos/crear', [ProjectController::class, 'store']);
-$router->get('tickets', [\app\Controllers\TicketController::class, 'index']);
-$router->get('tickets/crear', [\app\Controllers\TicketController::class, 'create']);
-$router->post('tickets/crear', [\app\Controllers\TicketController::class, 'store']);
-$router->get('chat', [\app\Controllers\ChatController::class, 'index']);
-$router->get('chat/getMessages', [\app\Controllers\ChatController::class, 'getMessages']);
-$router->post('chat/send', [\app\Controllers\ChatController::class, 'send']);
+// --- 1. PRIMERO REGISTRAMOS TODAS LAS RUTAS ---
+$router->get('/', 'DashboardController@index');
+$router->get('dashboard', 'DashboardController@index');
 
-// Gestión de Usuarios
-$router->get('users', [UserController::class, 'index']);
-$router->get('users/create', [UserController::class, 'create']);
-$router->post('users/create', [UserController::class, 'store']);
-$router->get('users/edit', [UserController::class, 'edit']);
-$router->post('users/edit', [UserController::class, 'update']);
-$router->post('users/delete', [UserController::class, 'delete']);
+// Rutas de Autenticación
+$router->get('login', 'AuthController@showLogin');
+$router->post('login', 'AuthController@login'); 
+
+// Edité y añadí más Rutas de Usuarios:
+//Muestra la lista
+$router->get('users', 'UserController@index');
+//muestra el formulario de nuevo usuario
+$router->get('users/create', 'UserController@create');
+//guarda el usuario en la base de datos
+$router->post('users/create', 'UserController@store');
+//muestra el formulario con los datos de ese usuario para editar
+$router->get('users/edit', 'UserController@edit');
+//actualiza el usuario en la base de datos
+$router->post('users/edit', 'UserController@update');
+//borra el usuario de la base de datos
+$router->post('users/delete', 'UserController@delete');
+
+// Rutas de Proyectos
+$router->get('proyectos', 'ProjectController@index');
+//Rutas de Creacion de Proyectos
+$router->get('proyectos/crear', 'ProjectController@create');
+$router->post('proyectos/crear', 'ProjectController@store');
+//Rutas de Edicion de Proyectos
+$router->get('proyectos/editar', 'ProjectController@edit');
+$router->post('proyectos/update', 'ProjectController@update');
+
+// --- 2. LUEGO CAPTURAMOS LA URL ---
+$uri = isset($_GET['route']) ? $_GET['route'] : '/';
+$method = $_SERVER['REQUEST_METHOD'];
+
+// --- 3. AL FINAL DE TODO DESPACHAMOS ---
+$router->dispatch($uri, $method);

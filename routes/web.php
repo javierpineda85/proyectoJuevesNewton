@@ -35,9 +35,44 @@ $router->post('proyectos/crear', 'ProjectController@store');
 $router->get('proyectos/editar', 'ProjectController@edit');
 $router->post('proyectos/update', 'ProjectController@update');
 
+<<<<<<< Updated upstream
 // --- 2. LUEGO CAPTURAMOS LA URL ---
 $uri = isset($_GET['route']) ? $_GET['route'] : '/';
 $method = $_SERVER['REQUEST_METHOD'];
+=======
+//Gestión de Usuarios
+use app\Controllers\UserController;
+
+$router->get('users', [UserController::class, 'index'], [
+    'AuthMiddleware' => ['admin', 'superadmin', 'administrativo']
+]);
+$router->get('users/create', [UserController::class, 'create'], [
+    'AuthMiddleware' => ['admin', 'superadmin', 'administrativo']
+]);
+$router->post('users/create', [UserController::class, 'store'], [
+    'AuthMiddleware' => ['admin', 'superadmin', 'administrativo']
+]);
+$router->get('users/edit', [UserController::class, 'edit'], [
+    'AuthMiddleware' => ['admin', 'superadmin', 'administrativo']
+]);
+$router->post('users/edit', [UserController::class, 'update'], [
+    'AuthMiddleware' => ['admin', 'superadmin', 'administrativo']
+]);
+$router->post('users/delete', [UserController::class, 'delete'], [
+    'AuthMiddleware' => ['admin', 'superadmin', 'administrativo']
+]);
+
+// Gestión de Tickets
+$router->get('tickets', [\app\Controllers\TicketController::class, 'index'], [
+    'AuthMiddleware' => ['admin', 'directivo', 'administrativo', 'empleado', 'cliente']
+]);
+$router->get('tickets/crear', [\app\Controllers\TicketController::class, 'create'], [
+    'AuthMiddleware' => ['admin', 'directivo', 'administrativo', 'empleado', 'cliente']
+]);
+$router->post('tickets/crear', [\app\Controllers\TicketController::class, 'store'], [
+    'AuthMiddleware' => ['admin', 'directivo', 'administrativo', 'empleado', 'cliente']
+]);
+>>>>>>> Stashed changes
 
 // --- 3. AL FINAL DE TODO DESPACHAMOS ---
 $router->dispatch($uri, $method);

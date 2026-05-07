@@ -10,23 +10,24 @@ use app\Core\Database;
 class UserController extends Controller {
     
     public function index() {
-        Session::checkRole(['admin', 'directivo', 'administrativo']);
-        
-        $usuarios = User::getAll();
-        $this->render('users/index', ['usuarios' => $usuarios]);
+        Session::checkRole(['super_admin', 'administrativo']);
+
+        $users = User::all();
+
+        $this->render('users/index', ['users' => $users]);
     }
 
     public function create() {
-        Session::checkRole(['admin', 'directivo']);
-        
-        $db = Database::getInstancia();
+        Session::checkRole(['super_admin']);
+
+        $db = Database::getInstance()->getConnection();
         $roles = $db->query("SELECT * FROM roles")->fetchAll();
 
         $this->render('users/create', ['roles' => $roles]);
     }
 
     public function store() {
-        Session::checkRole(['admin', 'directivo']);
+        Session::checkRole(['super_admin']);
 
         $data = [
             'empresa_id' => Session::get('empresa_id'),
@@ -38,36 +39,30 @@ class UserController extends Controller {
             'estado'     => $_POST['estado'] ?? 'activo'
         ];
 
-        if (User::create($data)) {
-            redirect('usuarios');
-            exit;
-        } else {
-            die("Error al crear el usuario.");
-        }
+        User::create($data);
+
+        redirect('/usuarios');
     }
 
     public function edit() {
-        Session::checkRole(['admin', 'directivo']);
-        $id = $_GET['id'] ?? 0;
+        Session::checkRole(['super_admin']);
 
-        $usuario = User::findById($id);
-        if (!$usuario) {
-            redirect('usuarios');
-            exit;
-        }
+        $id = $_GET['id'] ?? null;
 
-        $db = Database::getInstancia();
+        if (!$id) redirect('/usuarios');
+
+        $user = User::findById($id);
+
+        $db = Database::getInstance()->getConnection();
         $roles = $db->query("SELECT * FROM roles")->fetchAll();
 
-        $this->render('users/edit', [
-            'usuario' => $usuario,
-            'roles' => $roles
-        ]);
+        $this->render('users/edit', compact('user', 'roles'));
     }
 
     public function update() {
-        Session::checkRole(['admin', 'directivo']);
-        $id = $_GET['id'] ?? 0;
+        Session::checkRole(['super_admin']);
+
+        $id = $_GET['id'];
 
         $data = [
             'rol_id'     => $_POST['rol_id'],
@@ -77,23 +72,22 @@ class UserController extends Controller {
             'estado'     => $_POST['estado']
         ];
 
-        if (!empty($_POST['password'])) {
-            $data['password'] = $_POST['password'];
+       if (!empty($_POST['password'])) {
+            $data['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
         }
 
-        if (User::update($id, $data)) {
-            redirect('usuarios');
-            exit;
-        } else {
-            die("Error al actualizar el usuario.");
-        }
+        User::update($id, $data);
+
+        redirect('/usuarios');
     }
 
     public function delete() {
-        Session::checkRole(['admin', 'directivo']);
-        $id = $_POST['id'] ?? 0;
+        Session::checkRole(['super_admin']);
+
+        $id = $_POST['id'];
+
         User::delete($id);
-        redirect('usuarios');
-        exit;
+
+        redirect('/usuarios');
     }
-}
+}

@@ -1,0 +1,18 @@
+# .htaccess raiz — C:\wamp64\www\proyectoJuevesNewton\proyecto_fixed\.htaccess
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # ⚠ Ruta corregida según la ubicación real del proyecto
+    RewriteBase /proyectoJuevesNewton/proyecto_fixed/
+
+    # Redirigir raiz exacta al front controller
+    RewriteRule ^$ public/index.php [L]
+
+    # No reescribir archivos o carpetas que existen fisicamente
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Todo lo demas va a public/index.php
+    RewriteRule ^(.*)$ public/index.php [L,QSA]
+</IfModule>

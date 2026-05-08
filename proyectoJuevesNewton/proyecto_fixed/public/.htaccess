@@ -1,0 +1,15 @@
+# .htaccess dentro de public/
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # ⚠ Ruta corregida según la ubicación real del proyecto
+    RewriteBase /proyectoJuevesNewton/proyecto_fixed/public/
+
+    # Si el archivo o directorio existe, servirlo directamente
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # De lo contrario, enviar todo a index.php
+    RewriteRule ^(.*)$ index.php [L,QSA]
+</IfModule>
